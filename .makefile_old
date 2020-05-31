@@ -1,0 +1,33 @@
+EXE_DIR = bin
+OBJ_DIR = objs
+SOURCE_DIR = srcs
+OUT_NAME = dko32.dll
+CC = g++
+DX_SDK_INCLUDE = "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include"
+DX_SDK_LIB = "C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86"
+INCLUDE_DIR = includes
+CFLAGS = -std=c++14 -m32 -I $(INCLUDE_DIR)
+LIBS = -L$(DX_SDK_LIB) -ld3d9 -ld3dx9
+
+_OBJ = dllmain.o drawing.o hook.o dx.o hack.o
+OBJ = $(patsubst %, $(OBJ_DIR)/%, $(_OBJ))
+
+$(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+all: install-env $(OBJ)
+	$(CC) -shared -o $(EXE_DIR)/$(OUT_NAME) $(OBJ) $(CFLAGS) $(LIBS)
+
+install-env:
+	@echo off
+	IF exist $(EXE_DIR) ( echo $(EXE_DIR) exists ) ELSE ( mkdir $(EXE_DIR) && echo $(EXE_DIR) dir created )
+	IF exist $(OBJ_DIR) ( echo $(OBJ_DIR) dir exists ) ELSE ( mkdir $(OBJ_DIR) && echo $(OBJ_DIR) dir created )
+
+test:
+	@echo | set /p text="Executing "
+	$(EXE_DIR)/$(OUT_NAME)
+
+.PHONY: clean
+
+clean:
+	del /f /Q $(OBJ_DIR) $(EXE_DIR)
