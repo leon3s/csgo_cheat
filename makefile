@@ -18,7 +18,7 @@ LDLIBS   := -ld3d9 -ld3dx9
 
 .PHONY: all clean fclean re
 
-all: $(EXE)
+all: install-env $(EXE)
 
 re: fclean all
 
@@ -27,6 +27,12 @@ $(EXE): $(OBJS)
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+install-env:
+	@echo off
+	IF exist $(EXE_DIR) ( echo $(EXE_DIR) exists ) ELSE ( mkdir $(EXE_DIR) && echo $(EXE_DIR) dir created )
+	IF exist $(OBJS_DIR) ( echo $(OBJS_DIR) exists ) ELSE ( mkdir $(OBJS_DIR) && echo $(OBJS_DIR) dir created )
+
 
 clean:
 	del /f /Q $(OBJS_DIR)

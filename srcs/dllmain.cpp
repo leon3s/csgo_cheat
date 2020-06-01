@@ -10,6 +10,19 @@ tEndScene oEndScene = nullptr;
 LPDIRECT3DDEVICE9 pDevice = nullptr;
 
 Hack *hack;
+FILE *f;
+
+void dll_init() {
+  AllocConsole();
+  freopen_s(&f, "CONIN$", "r", stdin);
+  freopen_s(&f, "CONOUT$", "w", stdout);
+  freopen_s(&f, "CONOUT$", "w", stderr);
+}
+
+void dll_eject() {
+  FreeConsole();
+  fclose(f);
+}
 
 // hook function
 void APIENTRY hkEndScene(LPDIRECT3DDEVICE9 o_pDevice) {
@@ -19,10 +32,17 @@ void APIENTRY hkEndScene(LPDIRECT3DDEVICE9 o_pDevice) {
   if (!pDevice) {
     pDevice = o_pDevice;
   }
-  DrawFilledRect(10, 10, 10, 10, D3DCOLOR_ARGB(255, 255, 255, 1));
+  // crosshair
+  DrawFilledRect(
+    (windowWidth / 2) - 1,
+    (windowHeight / 2),
+    2,
+    2,
+    D3DCOLOR_ARGB(255, 255, 255, 255)
+  );
+  DrawFilledRect(0, 0, 10, 10, D3DCOLOR_ARGB(255, 255, 255, 1));
   for (int i = 0; i < 32; i++) {
     Ent *curEnt = nullptr;
-
     curEnt = hack->entList->ents[i].ent;
     if (!hack->checkValidEnt(curEnt))
       continue;
@@ -38,47 +58,29 @@ void APIENTRY hkEndScene(LPDIRECT3DDEVICE9 o_pDevice) {
 }
 
 DWORD WINAPI HackThread(HMODULE hModule) {
-  hack = new Hack();
-  hack->init();
   //hook
   if (GetD3D9Device(d3d9Device, sizeof(d3d9Device))) {
     memcpy(EndSceneBytes, (char *)d3d9Device[42], 7);
     oEndScene = (tEndScene)TrampHook((char *)d3d9Device[42], (char *)hkEndScene, 7);
   }
+  dll_init();
+  hack = new Hack();
+  hack->init();
   while (!GetAsyncKeyState(VK_END)) {
     hack->update();
   }
   //unhook
   Patch((BYTE *)d3d9Device[42], EndSceneBytes, 7);
-  // uninject
-  FreeLibraryAndExitThread(hModule, 0);
+  delete hack;
+  std::cout << "Exiting" << std::endl;
+  dll_eject();
+  FreeLibraryAndExitThread(hModule, true);
+  return 0;
 }
 
-FILE *dll_init() {
-  FILE *f;
-
-  AllocConsole();
-  freopen_s(&f, "CONIN$", "r", stdin);
-  freopen_s(&f, "CONOUT$", "w", stdout);
-  freopen_s(&f, "CONOUT$", "w", stderr);
-  return f;
-}
-
-void dll_free(FILE *f) {
-  fclose(f);
-  FreeConsole();
-}
-
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpr) {
-  FILE *f = nullptr;
-
-  f = dll_init();
-  if (reason == DLL_PROCESS_ATTACH)
+BOOL APIENTRY DllMain(HINSTANCE hModule, DWORD reason, LPVOID lpr) {
+  if (reason == DLL_PROCESS_ATTACH) {
     CloseHandle(CreateThread(0, 0, (LPTHREAD_START_ROUTINE)HackThread, hModule, 0, 0));
-  if (reason == DLL_PROCESS_DETACH)
-    dll_free(f);
-  if (reason == DLL_THREAD_DETACH) {
-    dll_free(f);
   }
   return TRUE;
 }

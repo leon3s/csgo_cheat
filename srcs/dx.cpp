@@ -1,10 +1,8 @@
 #include "includes.h"
-#include <D3d9.h>
-#include <d3d9.h>
 
-int windowHeight = 0;
-int windowWidth = 0;
-HWND window = 0;
+int windowHeight;
+int windowWidth;
+HWND window;
 
 BOOL CALLBACK enumWind(HWND handle, LPARAM lp) {
   DWORD procId;
@@ -19,13 +17,22 @@ BOOL CALLBACK enumWind(HWND handle, LPARAM lp) {
 
 HWND GetProcessWindow() {
   RECT size;
+  window = NULL;
+  FILE *f;
 
   EnumWindows(enumWind, 0);
   GetWindowRect(window, &size);
+  AllocConsole();
+  freopen_s(&f, "CONIN$", "r", stdin);
+  freopen_s(&f, "CONOUT$", "w", stdout);
+  freopen_s(&f, "CONOUT$", "w", stderr);
+  std::cout << "Get GetProcessWindow size bot top right left : " << size.bottom << " " << size.top << " " << size.right << " " << size.left << std::endl;
   windowHeight = size.bottom - size.top;
   windowWidth = size.right - size.left;
+  std::cout << "window Width/Height : " << windowWidth << " " << windowHeight << std::endl;
   windowHeight -= 29;
-  windowWidth -= 5;
+  windowWidth -= 6;
+  fclose(f);
   return window;
 }
 
@@ -55,10 +62,9 @@ HWND GetProcessWindow() {
      &d3dpp,
      &pDummyDevice
    );
-
    if (dummyDevCreated != S_OK) {
      d3dpp.Windowed = !d3dpp.Windowed;
-     HRESULT dummyDevCreated = pD3D->CreateDevice(
+     dummyDevCreated = pD3D->CreateDevice(
        D3DADAPTER_DEFAULT,
        D3DDEVTYPE_HAL,
        d3dpp.hDeviceWindow,

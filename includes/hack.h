@@ -1,5 +1,4 @@
-#ifndef HACK_H
-#define HACK_H
+#pragma once
 
 #include <iostream>
 
@@ -41,8 +40,8 @@ public:
     DEFINE_MEMBER_N(int, clientId, 0x2FC8);
     // armor value
     DEFINE_MEMBER_N(int, iArmor, 0xB368);
-    // name ?
-    DEFINE_MEMBER_N(void *, m_szCustomName, 0x303C);
+
+    DEFINE_MEMBER_N(int, boneMatrix, 0x26A8);
 	};
 };
 
@@ -64,17 +63,17 @@ public:
   uintptr_t dwClientState = 0x589DD4;
   uintptr_t dwClientState_GetLocalPlayer = 0x180;
   uintptr_t dwViewMatrix = 0x4D3CA64;
-  uintptr_t engine = 0x0;
-  uintptr_t client = 0x0;
-  int       localEntI;
+  uintptr_t   engine = 0x0;
+  uintptr_t   client = 0x0;
   Ent       *localEnt;
   EntList   *entList;
   float     viewMatrix[16];
+
+  ID3DXLine *LineL;
 
   void init();
   void update();
   bool checkValidEnt(Ent *ent);
   bool worldToScreen(Vec3 pos, Vec2 &screen);
+  Vec3 getBonePos(Ent *ent, int bone);
 };
-
-#endif

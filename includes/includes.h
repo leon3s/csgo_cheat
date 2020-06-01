@@ -1,6 +1,4 @@
 #pragma once
-#ifndef INCLUDES_H
-#define INCLUDES_H
 
 #include <Windows.h>
 
@@ -12,6 +10,3 @@
 #include "hook.h"
 #include "drawing.h"
 #include "hack.h"
-#include "logger.h"
-
-#endif

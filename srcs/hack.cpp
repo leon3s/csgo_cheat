@@ -3,22 +3,19 @@
 void Hack::init() {
   this->client = (uintptr_t)GetModuleHandle("client_panorama.dll");
   this->engine = (uintptr_t)GetModuleHandle("engine.dll");
-  this->localEnt = *(Ent **)(this->client + this->dwLocalPlayer);
   this->entList = (EntList *)(this->client + this->dwEntityList);
+  this->localEnt = *(Ent **)(this->client + this->dwLocalPlayer);
 }
 
 void Hack::update() {
-  this->localEnt = *(Ent **)(this->client + this->dwLocalPlayer);
-  this->entList = (EntList *)(this->client + this->dwEntityList);
-  int playerIndex = *(int *)(this->engine + this->dwClientState_GetLocalPlayer);
-
-  std::cout << "local player index : " << playerIndex << std::endl;
-  std::cout << " hack init function ! localEnt iHealth | iArmor " << this->localEnt->iHealth << " " << this->localEnt->iArmor << std::endl;
   memcpy(&this->viewMatrix, (PBYTE *)(this->client + this->dwViewMatrix), sizeof(this->viewMatrix));
 }
 
 bool Hack::checkValidEnt(Ent* ent) {
   if (ent == nullptr) {
+    return false;
+  }
+  if (ent == this->localEnt) {
     return false;
   }
   if (ent->iHealth <= 0) {
@@ -46,4 +43,14 @@ bool Hack::worldToScreen(Vec3 pos, Vec2& screen) {
 	screen.x = (windowWidth / 2 * NDC.x) + (NDC.x + windowWidth / 2);
 	screen.y = -(windowHeight / 2 * NDC.y) + (NDC.y + windowHeight / 2);
 	return true;
+}
+
+Vec3 Hack::getBonePos(Ent *ent, int bone) {
+  uintptr_t bonePtr = ent->boneMatrix;
+
+  Vec3 bonePos;
+  bonePos.x = *(float *)(bonePtr + 0x30 * bone + 0x0c);
+  bonePos.y = *(float *)(bonePtr + 0x30 * bone + 0x1c);
+  bonePos.z = *(float *)(bonePtr + 0x30 * bone + 0x2c);
+  return bonePos;
 }
