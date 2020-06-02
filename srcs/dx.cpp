@@ -22,17 +22,15 @@ HWND GetProcessWindow() {
 
   EnumWindows(enumWind, 0);
   GetWindowRect(window, &size);
-  AllocConsole();
-  freopen_s(&f, "CONIN$", "r", stdin);
-  freopen_s(&f, "CONOUT$", "w", stdout);
-  freopen_s(&f, "CONOUT$", "w", stderr);
-  std::cout << "Get GetProcessWindow size bot top right left : " << size.bottom << " " << size.top << " " << size.right << " " << size.left << std::endl;
+  // AllocConsole();
+  // freopen_s(&f, "CONIN$", "r", stdin);
+  // freopen_s(&f, "CONOUT$", "w", stdout);
+  // freopen_s(&f, "CONOUT$", "w", stderr);
+  // std::cout << "Get GetProcessWindow size bot top right left : " << size.bottom << " " << size.top << " " << size.right << " " << size.left << std::endl;
   windowHeight = size.bottom - size.top;
   windowWidth = size.right - size.left;
-  std::cout << "window Width/Height : " << windowWidth << " " << windowHeight << std::endl;
-  windowHeight -= 29;
-  windowWidth -= 6;
-  fclose(f);
+  // std::cout << "window Width/Height : " << windowWidth << " " << windowHeight << std::endl;
+  // fclose(f);
   return window;
 }
 
@@ -77,6 +75,10 @@ HWND GetProcessWindow() {
        return false;
      }
    }
+   // if (d3dpp.Windowed) {
+   //   windowHeight -= 29;
+   //   windowWidth -= 6;
+   // }
    memcpy(pTable, *(void **)(pDummyDevice), size);
    pDummyDevice->Release();
    pD3D->Release();

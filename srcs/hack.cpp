@@ -3,11 +3,11 @@
 void Hack::init() {
   this->client = (uintptr_t)GetModuleHandle("client_panorama.dll");
   this->engine = (uintptr_t)GetModuleHandle("engine.dll");
-  this->entList = (EntList *)(this->client + this->dwEntityList);
-  this->localEnt = *(Ent **)(this->client + this->dwLocalPlayer);
 }
 
 void Hack::update() {
+  this->entList = (EntList *)(this->client + this->dwEntityList);
+  this->localEnt = *(Ent **)(this->client + this->dwLocalPlayer);
   memcpy(&this->viewMatrix, (PBYTE *)(this->client + this->dwViewMatrix), sizeof(this->viewMatrix));
 }
 
@@ -15,7 +15,7 @@ bool Hack::checkValidEnt(Ent* ent) {
   if (ent == nullptr) {
     return false;
   }
-  if (ent == this->localEnt) {
+  if (ent->iTeamNum == this->localEnt->iTeamNum) {
     return false;
   }
   if (ent->iHealth <= 0) {
