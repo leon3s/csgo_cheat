@@ -1,13 +1,13 @@
 #include "includes.h"
 
 void Hack::init() {
-  this->client = (uintptr_t)GetModuleHandle("client_panorama.dll");
+  this->client = (uintptr_t)GetModuleHandle("client.dll");
   this->engine = (uintptr_t)GetModuleHandle("engine.dll");
 }
 
 void Hack::update() {
-  this->entList = (EntList *)(this->client + this->dwEntityList);
   this->localEnt = *(Ent **)(this->client + this->dwLocalPlayer);
+  this->entList = (EntList *)(this->client + this->dwEntityList);
   memcpy(&this->viewMatrix, (PBYTE *)(this->client + this->dwViewMatrix), sizeof(this->viewMatrix));
 }
 
@@ -46,9 +46,9 @@ bool Hack::worldToScreen(Vec3 pos, Vec2& screen) {
 }
 
 Vec3 Hack::getBonePos(Ent *ent, int bone) {
+  Vec3 bonePos;
   uintptr_t bonePtr = ent->boneMatrix;
 
-  Vec3 bonePos;
   bonePos.x = *(float *)(bonePtr + 0x30 * bone + 0x0c);
   bonePos.y = *(float *)(bonePtr + 0x30 * bone + 0x1c);
   bonePos.z = *(float *)(bonePtr + 0x30 * bone + 0x2c);

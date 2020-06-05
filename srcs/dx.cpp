@@ -18,35 +18,23 @@ BOOL CALLBACK enumWind(HWND handle, LPARAM lp) {
 HWND GetProcessWindow() {
   RECT size;
   window = NULL;
-  FILE *f;
 
   EnumWindows(enumWind, 0);
   GetWindowRect(window, &size);
-  // AllocConsole();
-  // freopen_s(&f, "CONIN$", "r", stdin);
-  // freopen_s(&f, "CONOUT$", "w", stdout);
-  // freopen_s(&f, "CONOUT$", "w", stderr);
-  // std::cout << "Get GetProcessWindow size bot top right left : " << size.bottom << " " << size.top << " " << size.right << " " << size.left << std::endl;
   windowHeight = size.bottom - size.top;
   windowWidth = size.right - size.left;
-  // std::cout << "window Width/Height : " << windowWidth << " " << windowHeight << std::endl;
-  // fclose(f);
   return window;
 }
 
- bool GetD3D9Device(void **pTable, size_t size) {
+bool GetD3D9Device(void **pTable, size_t size) {
    if (!pTable) {
      return false;
    }
-
    IDirect3D9 *pD3D = Direct3DCreate9(D3D_SDK_VERSION);
-
    if (!pD3D) {
      return false;
    }
-
    IDirect3DDevice9 *pDummyDevice = nullptr;
-
    D3DPRESENT_PARAMETERS d3dpp = {};
    d3dpp.Windowed = false;
    d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
@@ -75,7 +63,7 @@ HWND GetProcessWindow() {
        return false;
      }
    }
-   // if (d3dpp.Windowed) {
+   // if (d3dpp.Windowed == true) {
    //   windowHeight -= 29;
    //   windowWidth -= 6;
    // }
@@ -83,4 +71,4 @@ HWND GetProcessWindow() {
    pDummyDevice->Release();
    pD3D->Release();
    return true;
- }
+}
