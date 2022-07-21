@@ -38,8 +38,6 @@ public:
 		DEFINE_MEMBER_N(Vec3, vecOrigin, 0x138);
 		// iTeamNum
 		DEFINE_MEMBER_N(int, iTeamNum, 0xF4);
-    // clientID
-    DEFINE_MEMBER_N(int, clientId, 0x2FC8);
     // armor value
     DEFINE_MEMBER_N(int, iArmor, 0xB368);
     // bone matrix
@@ -62,11 +60,9 @@ public:
 
 class Hack {
 public:
-  uintptr_t dwEntityList = 0x4D4B144;
+  uintptr_t dwEntityList = 0x4D4B104;
   uintptr_t dwLocalPlayer = 0xD36B94;
-  uintptr_t dwClientState = 0x589DD4;
-  uintptr_t dwClientState_GetLocalPlayer = 0x180;
-  uintptr_t dwViewMatrix = 0x4D3CA74;
+  uintptr_t dwViewMatrix = 0x4D3CA34;
   uintptr_t   engine = 0x0;
   uintptr_t   client = 0x0;
   Ent       *localEnt;
